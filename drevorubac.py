@@ -69,15 +69,14 @@ class Drevorubac(pygame.sprite.Sprite):
             self.rect.y += self.SPEED
             self.is_moving = True
 
-        if keys[pygame.K_SPACE] and not self.is_attacking:  # Start attack
+        if keys[pygame.K_SPACE] and not self.is_attacking:
             self.is_attacking = True
             self.current_frame = 0
             self.update_count = 0
-            self.hit_sprite.attack()  # Call attack method of HitSprite
+            self.hit_sprite.attack()
 
         if not keys[pygame.K_SPACE] and not self.is_attacking:
-            self.hit_sprite.stop_attacking()  # Call attack method of HitSprite
-
+            self.hit_sprite.stop_attacking()
 
         if self.is_attacking:
             self.update_count += 1
