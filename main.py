@@ -1,4 +1,5 @@
 import pygame
+import sys
 from settings import Game_setting
 from drevorubac import Drevorubac
 
@@ -16,6 +17,7 @@ drevorubac = Drevorubac()
 all_sprites = pygame.sprite.Group()
 all_sprites.add(drevorubac)
 
+clock = pygame.time.Clock()
 running = True
 while running:
     for event in pygame.event.get():
@@ -31,5 +33,6 @@ while running:
     all_sprites.draw(screen)
 
     pygame.display.flip()
+    clock.tick(60)
 
 pygame.quit()
