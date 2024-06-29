@@ -73,6 +73,11 @@ class Drevorubac(pygame.sprite.Sprite):
             self.is_attacking = True
             self.current_frame = 0
             self.update_count = 0
+            self.hit_sprite.attack()  # Call attack method of HitSprite
+
+        if not keys[pygame.K_SPACE] and not self.is_attacking:
+            self.hit_sprite.stop_attacking()  # Call attack method of HitSprite
+
 
         if self.is_attacking:
             self.update_count += 1
@@ -105,3 +110,4 @@ class Drevorubac(pygame.sprite.Sprite):
                 self.image = self.idle_frame
             else:
                 self.image = self.idle_flipped_frame
+
