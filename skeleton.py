@@ -12,7 +12,7 @@ class Skeleton(pygame.sprite.Sprite):
         self.screen_height = settings.screen_height
 
         # Load spritesheet and set initial frame
-        self.load_spritesheet('./pixel_art/skeleton.png', 60, 70)
+        self.load_spritesheet('./pixel_art/skeleton1.png', 60, 70)
 
         # Initial position (randomly within the screen)
         self.rect.x = random.randint(0, self.screen_width - self.rect.width)
@@ -44,7 +44,7 @@ class Skeleton(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
 
     def get_image(self, x, y, w, h):
-        image = pygame.Surface((w, h)).convert_alpha()
+        image = pygame.Surface((w, h), pygame.SRCALPHA).convert_alpha()
         image.blit(self.spritesheet, (0, 0), (x, y, w, h))
         return image
 

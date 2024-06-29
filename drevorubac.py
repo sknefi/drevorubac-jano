@@ -3,11 +3,11 @@ import pygame
 from hitsprite import HitSprite
 class Spritesheet:
     def __init__(self, filename):
-        self.spritesheet = pygame.image.load(filename).convert()
+        self.spritesheet = pygame.image.load(filename).convert_alpha()
 
     def get_image(self, x, y, w, h):
-        image = pygame.Surface((w,h))
-        image.blit(self.spritesheet, (0,0), (x, y, w, h))
+        image = pygame.Surface((w, h), pygame.SRCALPHA).convert_alpha()
+        image.blit(self.spritesheet, (0, 0), (x, y, w, h))
         return image
 
 class Drevorubac(pygame.sprite.Sprite):
@@ -16,7 +16,7 @@ class Drevorubac(pygame.sprite.Sprite):
         self.SPEED = 3
         self.SIZE = 70
         self.settings = Game_setting()
-        sprite_sheet = Spritesheet('pixel_art/drevorubac.png')
+        sprite_sheet = Spritesheet('pixel_art/drevorubac1.png')
 
         # Load idle animation frame
         self.idle_frame = sprite_sheet.get_image(0, 0, self.SIZE, self.SIZE)
