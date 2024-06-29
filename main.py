@@ -2,6 +2,7 @@ import pygame
 import sys
 from settings import Game_setting
 from drevorubac import Drevorubac
+from hitsprite import HitSprite
 
 pygame.init()
 
@@ -14,8 +15,10 @@ background_image = pygame.image.load('./pixel_art/bckground.png').convert()
 background_image = pygame.transform.scale(background_image, (settings.screen_width, settings.screen_height))
 
 drevorubac = Drevorubac()
+#drevorubac1 = Drevorubac()
 all_sprites = pygame.sprite.Group()
-all_sprites.add(drevorubac)
+all_sprites.add(drevorubac)  # Add Drevorubac to sprite group
+all_sprites.add(drevorubac.hit_sprite)  # Add HitSprite to sprite group
 
 clock = pygame.time.Clock()
 running = True

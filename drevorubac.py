@@ -1,5 +1,6 @@
 from settings import Game_setting
 import pygame
+from hitsprite import HitSprite
 class Spritesheet:
     def __init__(self, filename):
         self.spritesheet = pygame.image.load(filename).convert()
@@ -8,7 +9,6 @@ class Spritesheet:
         image = pygame.Surface((w,h))
         image.blit(self.spritesheet, (0,0), (x, y, w, h))
         return image
-
 
 class Drevorubac(pygame.sprite.Sprite):
     def __init__(self):
@@ -42,9 +42,15 @@ class Drevorubac(pygame.sprite.Sprite):
         self.facing_right = True
         self.attack_delay = 3  # Number of updates for the attack animation
 
+        self.hit_sprite = HitSprite()
+        self.hit_sprite.rect.center = self.rect.center
+
     def update(self):
         keys = pygame.key.get_pressed()
         self.is_moving = False
+
+        # this must be here, because as parameter in update it doesn't work, idk why
+        self.hit_sprite.rect.center = self.rect.center
 
         if keys[pygame.K_a] and self.rect.x > 0:  # Move left
             self.rect.x -= self.SPEED
@@ -81,6 +87,8 @@ class Drevorubac(pygame.sprite.Sprite):
             if self.update_count >= self.frame_delay:
                 self.current_frame = (self.current_frame + 1) % len(self.walk_frames)
                 self.update_count = 0
+
+        # Update hit sprite position
 
         if self.is_attacking:
             if self.facing_right:
