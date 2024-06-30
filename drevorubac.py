@@ -1,17 +1,22 @@
-from settings import Game_setting
+# drevorubac.py
+
 import pygame
+from settings import Game_setting
 from hitsprite import HitSprite
+
 class Spritesheet:
     def __init__(self, filename):
         self.spritesheet = pygame.image.load(filename).convert_alpha()
 
-    def get_image(self, x, y, w, h):
-        image = pygame.Surface((w, h), pygame.SRCALPHA).convert_alpha()
-        image.blit(self.spritesheet, (0, 0), (x, y, w, h))
+    def get_image(self, x, y, width, height, scale_width=None, scale_height=None):
+        image = pygame.Surface((width, height), pygame.SRCALPHA)
+        image.blit(self.spritesheet, (0, 0), (x, y, width, height))
+        if scale_width and scale_height:
+            image = pygame.transform.scale(image, (scale_width, scale_height))
         return image
 
 class Drevorubac(pygame.sprite.Sprite):
-    def __init__(self):
+    def __init__(self, all_skeletons):
         super().__init__()
         self.SPEED = 3
         self.SIZE = 70
@@ -19,15 +24,15 @@ class Drevorubac(pygame.sprite.Sprite):
         sprite_sheet = Spritesheet('pixel_art/drevorubac1.png')
 
         # Load idle animation frame
-        self.idle_frame = sprite_sheet.get_image(0, 0, self.SIZE, self.SIZE)
+        self.idle_frame = sprite_sheet.get_image(0, 0, self.SIZE, self.SIZE, self.SIZE, self.SIZE)
         self.idle_flipped_frame = pygame.transform.flip(self.idle_frame, True, False)
 
         # Load walking animation frames
-        self.walk_frames = [sprite_sheet.get_image(i * self.SIZE, 180, self.SIZE, self.SIZE) for i in range(6)]
+        self.walk_frames = [sprite_sheet.get_image(i * self.SIZE, 180, self.SIZE, self.SIZE, self.SIZE, self.SIZE) for i in range(6)]
         self.walk_flipped_frames = [pygame.transform.flip(frame, True, False) for frame in self.walk_frames]
 
         # Load attacking animation frames
-        self.attack_frames = [sprite_sheet.get_image(i * self.SIZE, 260, self.SIZE, self.SIZE) for i in range(4)]
+        self.attack_frames = [sprite_sheet.get_image(i * self.SIZE, 260, self.SIZE, self.SIZE, self.SIZE, self.SIZE) for i in range(4)]
         self.attack_flipped_frames = [pygame.transform.flip(frame, True, False) for frame in self.attack_frames]
 
         self.current_frame = 0
@@ -44,6 +49,8 @@ class Drevorubac(pygame.sprite.Sprite):
 
         self.hit_sprite = HitSprite()
         self.hit_sprite.rect.center = self.rect.center
+
+        self.all_skeletons = all_skeletons
 
     def update(self):
         keys = pygame.key.get_pressed()
@@ -75,6 +82,11 @@ class Drevorubac(pygame.sprite.Sprite):
             self.update_count = 0
             self.hit_sprite.attack()
 
+            # Check for collisions with skeletons only once per attack action
+            for skeleton in self.all_skeletons:
+                if pygame.sprite.collide_rect(self.hit_sprite, skeleton):
+                    skeleton.hit(10)  # Reduce skeleton's health by 10 when hit
+
         if not keys[pygame.K_SPACE] and not self.is_attacking:
             self.hit_sprite.stop_attacking()
 
@@ -93,7 +105,6 @@ class Drevorubac(pygame.sprite.Sprite):
                 self.update_count = 0
 
         # Update hit sprite position
-
         if self.is_attacking:
             if self.facing_right:
                 self.image = self.attack_frames[self.current_frame]
@@ -109,4 +120,3 @@ class Drevorubac(pygame.sprite.Sprite):
                 self.image = self.idle_frame
             else:
                 self.image = self.idle_flipped_frame
-

@@ -1,3 +1,5 @@
+# main.py
+
 import pygame
 import sys
 from settings import Game_setting
@@ -15,16 +17,16 @@ pygame.display.set_caption("Drevorubač Jano")
 background_image = pygame.image.load('./pixel_art/bckground.png').convert()
 background_image = pygame.transform.scale(background_image, (settings.screen_width, settings.screen_height))
 
-drevorubac = Drevorubac()
+# Create instances of Drevorubac and Skeleton
 skeleton = Skeleton()
+drevorubac = Drevorubac([skeleton])
 all_sprites = pygame.sprite.Group()
-all_sprites.add( skeleton, drevorubac.hit_sprite, drevorubac)
+all_sprites.add(skeleton, drevorubac.hit_sprite, drevorubac)
 
 clock = pygame.time.Clock()
 running = True
 while running:
     for event in pygame.event.get():
-        print(event)
         if event.type == pygame.QUIT:
             running = False
 

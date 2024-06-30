@@ -1,3 +1,5 @@
+# skeleton.py
+
 import pygame
 import random
 from settings import Game_setting
@@ -27,6 +29,9 @@ class Skeleton(pygame.sprite.Sprite):
         # Animation variables
         self.frame_delay = 12  # Number of updates before changing the frame
         self.current_frame = 0
+
+        # Health attribute
+        self.health = 100
 
     def load_spritesheet(self, filename, width, height):
         self.spritesheet = pygame.image.load(filename).convert_alpha()
@@ -84,3 +89,9 @@ class Skeleton(pygame.sprite.Sprite):
         # Ensure skeleton stays within screen boundaries
         self.rect.x = max(0, min(self.rect.x, self.screen_width - self.rect.width))
         self.rect.y = max(0, min(self.rect.y, self.screen_height - self.rect.height))
+
+    def hit(self, damage):
+        self.health -= damage
+        if self.health <= 0:
+            self.kill()  # Remove the skeleton from all groups
+
