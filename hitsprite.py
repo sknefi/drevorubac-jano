@@ -27,18 +27,14 @@ class HitSprite(pygame.sprite.Sprite):
         self.animation_speed = 5
         self.animation_counter = 0
 
-        # Load the sprite sheet
         sprite_sheet = Spritesheet('pixel_art/slashes1.png')
 
-        # Assuming each frame in the sprite sheet is 100x100 pixels
         frame_width, frame_height = 100, 100
 
-        # Extract frames from the sprite sheet (assuming a single row of frames)
-        for i in range(10):  # Assuming there are 10 frames in the row
+        for i in range(10):  # random number (this wasn't calculated) but it looks ok
             frame = sprite_sheet.get_circular_image(i * 80, 0, frame_width, frame_height, frame_width, frame_height)
             self.frames.append(frame)
 
-        # Initial image is an empty surface
         self.image = pygame.Surface((100, 100), pygame.SRCALPHA)
         self.rect = self.image.get_rect()
         self.rect.topleft = (0, 0)

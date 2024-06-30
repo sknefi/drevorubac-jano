@@ -3,7 +3,7 @@ import sys
 from settings import Game_setting
 from drevorubac import Drevorubac
 from skeleton import Skeleton
-from hitsprite import HitSprite
+from display_screen import Display_screen
 
 pygame.init()
 
@@ -15,38 +15,56 @@ screen_height = settings.screen_height
 screen = pygame.display.set_mode((screen_width, screen_height))
 pygame.display.set_caption("Drevorubač Jano")
 
-background_image = pygame.image.load('./pixel_art/bckground.png').convert()
+background_image = pygame.image.load('./pixel_art/bckground1.png').convert()
 background_image = pygame.transform.scale(background_image, (screen_width, screen_height))
 
-# Create instances of Drevorubac and Skeleton
 skeleton = Skeleton()
-drevorubac = Drevorubac([skeleton])
+skeleton1 = Skeleton()
+drevorubac = Drevorubac([skeleton, skeleton1])
 all_sprites = pygame.sprite.Group()
-all_sprites.add(skeleton, drevorubac.hit_sprite, drevorubac)
+all_sprites.add(skeleton, skeleton1, drevorubac.hit_sprite, drevorubac)
 
-# Font initialization
 pygame.font.init()
 font = pygame.font.SysFont('Arial', 24)
-
 clock = pygame.time.Clock()
-running = True
-while running:
+
+# DISPLAY SCREEN
+SHOW_INFO_SCREEN = 0
+SHOW_TITLE_SCREEN = 1
+PLAYING_GAME = 2
+
+display_screen = Display_screen(screen)
+
+current_state = SHOW_INFO_SCREEN
+
+while True:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
-            running = False
+            pygame.quit()
+            sys.exit()
 
-    # Update all sprites
-    all_sprites.update()
+        if event.type == pygame.KEYDOWN:
+            if current_state == SHOW_INFO_SCREEN:
+                if event.key == pygame.K_SPACE:
+                    current_state = SHOW_TITLE_SCREEN
+            elif current_state == SHOW_TITLE_SCREEN:
+                if event.key == pygame.K_SPACE:
+                    current_state = PLAYING_GAME
 
-    # Draw everything
-    screen.blit(background_image, (0, 0))
-    all_sprites.draw(screen)
+    if current_state == SHOW_INFO_SCREEN:
+        display_screen.intro_screen()
+    elif current_state == SHOW_TITLE_SCREEN:
+        display_screen.title_screen()
+    elif current_state == PLAYING_GAME:
+        # Update all sprites
+        all_sprites.update()
 
-    # Render and display statistics
-    damage_text = font.render(f"Damage Given: {drevorubac.damage_given}", True, (255, 255, 255))
-    kills_text = font.render(f"Kills: {drevorubac.kills}", True, (255, 255, 255))
-    screen.blit(damage_text, (20, 20))
-    screen.blit(kills_text, (20, 50))
+        # Draw everything
+        screen.blit(background_image, (0, 0))
+        all_sprites.draw(screen)
+
+        # Render and display statistics
+        display_screen.gaming_screen(drevorubac)
 
     pygame.display.flip()
     clock.tick(60)

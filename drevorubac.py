@@ -21,15 +21,15 @@ class Drevorubac(pygame.sprite.Sprite):
         self.settings = Game_setting()
         sprite_sheet = Spritesheet('pixel_art/drevorubac1.png')
 
-        # Load idle animation frame
+        # STANDING animation
         self.idle_frame = sprite_sheet.get_image(0, 0, self.SIZE, self.SIZE, self.SIZE, self.SIZE)
         self.idle_flipped_frame = pygame.transform.flip(self.idle_frame, True, False)
 
-        # Load walking animation frames
+        # WALKING animation
         self.walk_frames = [sprite_sheet.get_image(i * self.SIZE, 180, self.SIZE, self.SIZE, self.SIZE, self.SIZE) for i in range(6)]
         self.walk_flipped_frames = [pygame.transform.flip(frame, True, False) for frame in self.walk_frames]
 
-        # Load attacking animation frames
+        # ATTACKING animation
         self.attack_frames = [sprite_sheet.get_image(i * self.SIZE, 260, self.SIZE, self.SIZE, self.SIZE, self.SIZE) for i in range(4)]
         self.attack_flipped_frames = [pygame.transform.flip(frame, True, False) for frame in self.attack_frames]
 
@@ -40,10 +40,10 @@ class Drevorubac(pygame.sprite.Sprite):
 
         self.is_moving = False
         self.is_attacking = False
-        self.frame_delay = 4  # Number of updates before changing the frame
+        self.frame_delay = 4
         self.update_count = 0
         self.facing_right = True
-        self.attack_delay = 3  # Number of updates for the attack animation
+        self.attack_delay = 3
 
         self.hit_sprite = HitSprite()
         self.hit_sprite.rect.center = self.rect.center
@@ -59,20 +59,20 @@ class Drevorubac(pygame.sprite.Sprite):
         # this must be here, because as parameter in update it doesn't work, idk why
         self.hit_sprite.rect.center = self.rect.center
 
-        if keys[pygame.K_a] and self.rect.x > 0:  # Move left
+        if keys[pygame.K_a] and self.rect.x > 0:
             self.rect.x -= self.SPEED
             self.is_moving = True
             if self.facing_right:
                 self.facing_right = False
-        if keys[pygame.K_d] and self.rect.x < self.settings.screen_width - self.rect.width:  # Move right
+        if keys[pygame.K_d] and self.rect.x < self.settings.screen_width - self.rect.width:
             self.rect.x += self.SPEED
             self.is_moving = True
             if not self.facing_right:
                 self.facing_right = True
-        if keys[pygame.K_w] and self.rect.y > 0:  # Move up
+        if keys[pygame.K_w] and self.rect.y > 0:
             self.rect.y -= self.SPEED
             self.is_moving = True
-        if keys[pygame.K_s] and self.rect.y < self.settings.screen_height - self.rect.height:  # Move down
+        if keys[pygame.K_s] and self.rect.y < self.settings.screen_height - self.rect.height:
             self.rect.y += self.SPEED
             self.is_moving = True
 
@@ -82,10 +82,10 @@ class Drevorubac(pygame.sprite.Sprite):
             self.update_count = 0
             self.hit_sprite.attack()
 
-            # Check for collisions with skeletons only once per attack action
+            # KOLISIONS
             for skeleton in self.all_skeletons:
                 if pygame.sprite.collide_rect(self.hit_sprite, skeleton):
-                    skeleton.hit(10)  # Reduce skeleton's health by 10 when hit
+                    skeleton.hit(10)  # damage
                     self.damage_given += 10
                     if skeleton.health <= 0:
                         self.kills += 1
@@ -94,6 +94,7 @@ class Drevorubac(pygame.sprite.Sprite):
         if not keys[pygame.K_SPACE] and not self.is_attacking:
             self.hit_sprite.stop_attacking()
 
+        # HITSPRITE
         if self.is_attacking:
             self.update_count += 1
             if self.update_count >= self.attack_delay:
@@ -108,7 +109,6 @@ class Drevorubac(pygame.sprite.Sprite):
                 self.current_frame = (self.current_frame + 1) % len(self.walk_frames)
                 self.update_count = 0
 
-        # Update hit sprite position
         if self.is_attacking:
             if self.facing_right:
                 self.image = self.attack_frames[self.current_frame]
