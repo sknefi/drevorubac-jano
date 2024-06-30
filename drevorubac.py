@@ -1,5 +1,3 @@
-# drevorubac.py
-
 import pygame
 from settings import Game_setting
 from hitsprite import HitSprite
@@ -51,6 +49,8 @@ class Drevorubac(pygame.sprite.Sprite):
         self.hit_sprite.rect.center = self.rect.center
 
         self.all_skeletons = all_skeletons
+        self.damage_given = 0
+        self.kills = 0
 
     def update(self):
         keys = pygame.key.get_pressed()
@@ -86,6 +86,10 @@ class Drevorubac(pygame.sprite.Sprite):
             for skeleton in self.all_skeletons:
                 if pygame.sprite.collide_rect(self.hit_sprite, skeleton):
                     skeleton.hit(10)  # Reduce skeleton's health by 10 when hit
+                    self.damage_given += 10
+                    if skeleton.health <= 0:
+                        self.kills += 1
+                        self.all_skeletons.remove(skeleton)
 
         if not keys[pygame.K_SPACE] and not self.is_attacking:
             self.hit_sprite.stop_attacking()
