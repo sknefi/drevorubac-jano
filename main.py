@@ -18,7 +18,7 @@ background_image = pygame.transform.scale(background_image, (settings.screen_wid
 drevorubac = Drevorubac()
 skeleton = Skeleton()
 all_sprites = pygame.sprite.Group()
-all_sprites.add(drevorubac, drevorubac.hit_sprite, skeleton)
+all_sprites.add( skeleton, drevorubac.hit_sprite, drevorubac)
 
 clock = pygame.time.Clock()
 running = True
